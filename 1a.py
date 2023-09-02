@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib as plt
-image_path = 'image2.jpg'  
+image_path = 'image.jpg'  
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
 cv2.namedWindow('Resized Image', cv2.WINDOW_NORMAL)
