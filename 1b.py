@@ -2,25 +2,26 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-image_path = 'image.jpg'  
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-num_bits = 1
-quantization_step = 255 / (2 ** num_bits - 1)
-quantized_images = []
-while num_bits <= 8:
-    quantized_image = (image / quantization_step).astype(np.uint8) * quantization_step
-    quantized_images.append(quantized_image)
-    
-    num_bits += 1
-    quantization_step = 255 / (2 ** num_bits - 1)
+gray_image = cv2.imread('stone.jpg', cv2.IMREAD_GRAYSCALE)
 
-fig, axes = plt.subplots(2, 4, figsize=(12, 6))
-fig.suptitle('Quantized Images', fontsize=16)
+[height, width] = gray_image.shape
+sampled_image = []
+sampled_image.append(gray_image.copy())
 
-for i, ax in enumerate(axes.flat):
-    ax.imshow(quantized_images[i], cmap='gray', vmin=0, vmax=255)
-    ax.set_title(f'{i+1} bits')
-    ax.axis('off')
+for k in range(7):
+    for i in range(height):
+        for j in range(width):
+            gray_image[i][j] = gray_image[i][j] >> 1
+    sampled_image.append(gray_image.copy())
+row, col = 2, 4
+idx = 0
+plt.figure(figsize=(12, 6))
 
-plt.tight_layout()
+for i in range(row):
+    for j in range(col):
+        plt.subplot(row, col, idx+1)
+        plt.imshow(sampled_image[idx], cmap='gray')
+        plt.title(f'{8-idx}bits')
+        idx+=1
+
 plt.show()
