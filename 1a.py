@@ -3,10 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-img1 = cv2.imread('stone.jpg', cv2.IMREAD_GRAYSCALE)
-img1=cv2.resize(img1,(512,512))
-[m, n] = img1.shape
-print(m,n)
+image = cv2.imread('stone.jpg', cv2.IMREAD_GRAYSCALE)
+# image=cv2.resize(image,(512,512))
+[m, n] = image.shape
 
 f = 2
 sampled_image = []
@@ -16,20 +15,20 @@ for k in range(8):
     if img2.shape[0] > 0 and img2.shape[1] > 0:
         for i in range(0, m, f):
             for j in range(0, n, f):
-                    img2[i // f][j // f] = img1[i][j]
+                    img2[i // f][j // f] = image[i][j]
         sampled_image.append(img2)
     f = f*2
 
 
 row, col = 2, 4
-fig, ax = plt.subplots(row, col, figsize=(9, 7))
+plt.figure(figsize=(14,9))
 idx = 0
 for i in range(row):
     for j in range(col):
-        ax[i, j].imshow(sampled_image[idx], cmap='gray')
-        h = sampled_image[idx].shape[0]
-        w = sampled_image[idx].shape[1]
-        ax[i, j].set_title(f'{h}x{w}')
+        plt.subplot(row,col, idx+1)
+        plt.imshow(sampled_image[idx], cmap='gray')
+        [h,w] = sampled_image[idx].shape
+        plt.title(f'{h}x{w}')
         idx+=1
-
+# plt.tight_layout()
 plt.show()

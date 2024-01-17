@@ -27,18 +27,40 @@ noisy_image = image.copy()
 add_salt_noise(noisy_image)
 add_papper_noise(noisy_image)
 
-# def harmonic_filter(noisy_image, x, y, a, b, total_pixels):
-#     result = 0
+def psnr_calculation(original_image, noisy_image):
+    original_image = original_image.astype(np.float64)
+    noisy_image = noisy_image.astype(np.float64)
+    mse = np.mean((original_image-noisy_image)**2)
+    max_pixel = 255
+    psnr = 20 * np.log10(max_pixel/np.sqrt(mse))
+    return psnr
 
-#     for i in range(-a, a) :
-#         for j in range(-b, b):
-#             if image[x+i, y+j]>0:
-#                 result += 1/image[x+i, y+j]
-    
-#     return total_pixels/result
-neighborhood_size = 5
-filtered_image = cv2.filter2D(noisy_image, -1, np.ones((neighborhood_size, neighborhood_size), dtype=np.float32) / (1.0 * neighborhood_size * neighborhood_size))
+def harmonic_mean_filter(image, kernel_size):
+    height, width = image.shape
+    filtered_image = np.zeros_like(image, dtype=np.float64)
 
+    # Calculate the kernel radius
+    kernel_radius = kernel_size // 2
+
+    for i in range(kernel_radius, height - kernel_radius):
+        for j in range(kernel_radius, height - kernel_radius):
+            values = []
+
+            # Iterate over the neighborhood
+            for x in range(i - kernel_radius, i + kernel_radius + 1):
+                for y in range(j - kernel_radius, j + kernel_radius + 1):
+                    if image[x, y] != 0:
+                        values.append(1 / image[x, y])
+            # Calculate the harmonic mean
+            if values:
+                filtered_image[i, j] = int(len(values) / np.sum(values))
+
+    return filtered_image
+
+kernel_size = 5
+harmonic_filtered_image = harmonic_mean_filter(noisy_image, kernel_size)
+psnr1 = psnr_calculation(image, noisy_image)
+psnr2 = psnr_calculation(image, harmonic_filtered_image)
 
 
 plt.figure(figsize=(12, 4))
@@ -48,9 +70,9 @@ plt.title('Original Image')
 
 plt.subplot(1,3,2)
 plt.imshow(noisy_image, cmap = 'gray')
-plt.title('Noisy Image')
+plt.title(f'Noisy Image psnr: {psnr1:.2f}dB')
 
 plt.subplot(1,3,3)
-plt.imshow(filtered_image, cmap = 'gray')
-plt.title('Filtered Image')
+plt.imshow(harmonic_filtered_image, cmap = 'gray')
+plt.title(f'Filtered Image psnr: {psnr2:.2f}dB')
 plt.show()

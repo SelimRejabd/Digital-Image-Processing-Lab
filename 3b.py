@@ -29,27 +29,41 @@ print(type(noisy_image))
 add_salt_noise(noisy_image)
 add_papper_noise(noisy_image)
 
+def average_filter(noisy_image, kernel_size):
+    filtered_image = np.zeros_like(noisy_image)
+    pad_size = kernel_size // 2
+    starting_row = 0+pad_size
+    starting_col = 0+pad_size
+    ending_row = filtered_image.shape[0] - pad_size
+    ending_col = filtered_image.shape[1] - pad_size
+    mask = np.ones((kernel_size, kernel_size)) / (kernel_size**2)
 
-def avarage_filter(image, size):
-    kernel = np.ones((size, size), np.float32) / (size * size)
-    filtered_image = cv2.filter2D(image, -1, kernel)
+    for i in range(starting_row, ending_row):
+        for j in range(starting_col, ending_col):
+            window = noisy_image[i - pad_size:i + pad_size + 1, j-pad_size:j+pad_size+1]
+            temp_window = window.copy()
+            temp_window = temp_window * mask
+            temp_window_mean = np.sum(temp_window)
+            filtered_image[i][j] = temp_window_mean
+
     return filtered_image
 
-
 def calculate_psnr(image, filtered_image):
+    image = image.astype(np.float64)
+    filtered_image = filtered_image.astype(np.float64)
     mse = np.mean((image-filtered_image)**2)
     max_pixel = 255.0
     psnr = 20*np.log10(max_pixel/np.sqrt(mse))
     return psnr
 
 
-mask_3_filtered_image = avarage_filter(noisy_image, 3)
+mask_3_filtered_image = average_filter(noisy_image, 3)
 psnr_for_mask_3 = calculate_psnr(noisy_image, mask_3_filtered_image)
 
-mask_5_filtered_image = avarage_filter(noisy_image, 5)
+mask_5_filtered_image = average_filter(noisy_image, 5)
 psnr_for_mask_5 = calculate_psnr(noisy_image, mask_5_filtered_image)
 
-mask_7_filtered_image = avarage_filter(noisy_image, 7)
+mask_7_filtered_image = average_filter(noisy_image, 7)
 psnr_for_mask_7 = calculate_psnr(noisy_image, mask_7_filtered_image)
 
 plt.figure(figsize=(12, 6))

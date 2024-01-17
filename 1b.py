@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-gray_image = cv2.imread('stone.jpg', cv2.IMREAD_GRAYSCALE)
+gray_image = cv2.imread('sun.jpeg', cv2.IMREAD_GRAYSCALE)
 
 [height, width] = gray_image.shape
 sampled_image = []
