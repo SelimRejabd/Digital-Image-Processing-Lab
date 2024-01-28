@@ -2,7 +2,7 @@ import cv2
 import numpy
 import numpy as np
 import matplotlib.pyplot as plt
-image = cv2.imread('fingerprint.png', cv2.IMREAD_GRAYSCALE)
+image = cv2.imread('dilation.png', cv2.IMREAD_GRAYSCALE)
 
 def perform_erosion(image, structuring_element_size):
     kernel = np.ones((structuring_element_size, structuring_element_size), np.uint8)
