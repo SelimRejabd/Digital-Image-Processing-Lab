@@ -52,7 +52,6 @@ def average_filter(noisy_image, kernel_size):
             temp_window = temp_window * mask
             temp_window_mean = np.sum(temp_window)
             filtered_image[i][j] = temp_window_mean
-
     return filtered_image
 
 def median_filter(noisy_image, kernel_size):

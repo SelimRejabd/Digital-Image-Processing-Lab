@@ -2,18 +2,18 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def add_gaussian_noise(img, mean=0, stddev=1):
     gaussian_noise = np.random.normal(mean, stddev, img.shape)
     noisy_image = img + gaussian_noise
     noisy_image = np.clip(noisy_image, 0, 255)
     return noisy_image.astype(np.uint8)
 
+
 def butterworth_low_pass_filter(image, order, cut_off_frequency):
     height, width = image.shape
-    H = np.zeros(image.shape, dtype=np.float32)
+    H = np.zeros(image.shape)
 
-    # frequncy_domain_image = np.fft.fft2(image)
-    # frequncy_domain_image = np.fft.fftshift(frequncy_domain_image)
     frequency_domain_image = np.fft.fftshift(np.fft.fft2(image))
     n = order
     d0 = cut_off_frequency
@@ -38,7 +38,7 @@ def gaussian_low_pass_filter(image, cut_off_frequency):
     for i in range(height):
         for j in range(width):
             d = np.sqrt((i-height/2)**2 + (j-width/2)**2)
-            H[i, j] = np.exp(-(d**2) / (2*D0)**2)
+            H[i, j] = np.exp(-(d**2) / (2*(D0**2)))
 
     filtered_image = frequency_domain_image * H
     filtered_image = np.abs(np.fft.ifft2(filtered_image))
