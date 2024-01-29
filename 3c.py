@@ -65,9 +65,9 @@ def geometric_mean_filter(noisy_image, kernel_size):
                                  pad_size+1, j-pad_size: j+pad_size+1]
             non_zero_values = window[window != 0]
 
-            if (len(non_zero_values) == 0):
+            if (len(non_zero_values) > 0):
                 log_sum = np.sum(np.log(non_zero_values))
-                geometric_mean = np.exp(log_sum/(kernel_size*kernel_size))
+                geometric_mean = np.exp(log_sum/len(non_zero_values))
                 filtered_image[i][j] = geometric_mean
             else:
                 filtered_image[i][j] = np.median(window[window != 0])
